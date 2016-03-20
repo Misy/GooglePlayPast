@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.graphics.Color;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,7 +17,8 @@ import com.wish.googleplay.domain.AppInfo;
 import com.wish.googleplay.http.HttpHelper;
 import com.wish.googleplay.tools.UiUtils;
 
-public class DetailSafeHolder extends BaseHolder<AppInfo> {
+public class DetailSafeHolder extends BaseHolder<AppInfo> implements
+		OnClickListener {
 	@ViewInject(R.id.safe_layout)
 	private RelativeLayout safe_layout;
 	@ViewInject(R.id.safe_content)
@@ -61,6 +63,8 @@ public class DetailSafeHolder extends BaseHolder<AppInfo> {
 
 	@Override
 	public void refreshView(AppInfo data) {
+		safe_layout.setOnClickListener(this);
+
 		List<String> safeUrl = data.getSafeUrl();
 		List<String> safeDesUrl = data.getSafeDesUrl();
 		List<String> safeDes = data.getSafeDes();
@@ -91,6 +95,26 @@ public class DetailSafeHolder extends BaseHolder<AppInfo> {
 				ivs[i].setVisibility(View.GONE);
 				des_layout[i].setVisibility(View.GONE);
 			}
+		}
+	}
+
+	boolean flag = false;
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.safe_layout:
+			if (!flag) {
+				flag = true;
+				safe_content.setVisibility(View.VISIBLE);
+			} else {
+				flag = false;
+				safe_content.setVisibility(View.GONE);
+			}
+			break;
+
+		default:
+			break;
 		}
 	}
 
