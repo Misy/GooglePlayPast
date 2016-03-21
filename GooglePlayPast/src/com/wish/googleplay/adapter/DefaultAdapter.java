@@ -18,7 +18,6 @@ import com.wish.googleplay.tools.UiUtils;
 public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 		OnItemClickListener {
 	protected List<Data> datas;
-	// 定义两个常量来标识是默认条目，还是加载更多条目
 	private static final int DEFAULT_ITEM = 0;
 	private static final int MORE_ITEM = 1;
 	private ListView listView;
@@ -56,7 +55,7 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 	public View getView(int position, View convertView, ViewGroup parent) {
 		BaseHolder holder = null;
 
-		switch (getItemViewType(position)) { // 判断当前条目时什么类型
+		switch (getItemViewType(position)) {
 		case MORE_ITEM:
 			if (convertView == null) {
 				holder = getMoreHolder();
@@ -75,8 +74,7 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 			}
 			break;
 		}
-		return holder.getContentView(); // 如果当前Holder 恰好是MoreHolder
-										// 证明MoreHOlder已经显示
+		return holder.getContentView();
 	}
 
 	private MoreHolder holder;
@@ -110,12 +108,11 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 	protected abstract BaseHolder<Data> getHolder();
 
 	public void loadMore() {
-		// 请求网络要放到子线程中执行，调用我们之前创建的线程池类来管理
+		// 璇锋眰缃戠粶瑕佹斁鍒板瓙绾跨▼涓墽琛岋紝璋冪敤鎴戜滑涔嬪墠鍒涘缓鐨勭嚎绋嬫睜绫绘潵绠＄悊
 		ThreadManager.getInstance().createLongPool().execute(new Runnable() {
 
 			@Override
 			public void run() {
-				// 在子线程中加载更多
 				final List<Data> newData = onload();
 				UiUtils.runOnUiThread(new Runnable() {
 
@@ -126,11 +123,9 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 						} else if (newData.size() == 0) {
 							holder.setData(MoreHolder.HAS_NO_MORE);
 						} else {
-							// 成功了
 							holder.setData(MoreHolder.HAS_MORE);
-							datas.addAll(newData);// 给listView之前的集合添加一个新的集合
-
-							notifyDataSetChanged();// 刷新界面
+							datas.addAll(newData);
+							notifyDataSetChanged();
 
 						}
 
@@ -151,6 +146,6 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 	}
 
 	public void onInnerItemClick(int position) {
-		
+
 	}
 }

@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 
 import com.wish.googleplay.domain.AppInfo;
+import com.wish.googleplay.holder.DetailDesHolder;
 import com.wish.googleplay.holder.DetailInfoHolder;
 import com.wish.googleplay.holder.DetailSafeHolder;
 import com.wish.googleplay.holder.DetailScreenHolder;
@@ -63,6 +64,7 @@ public class DetailActivity extends BaseActivity {
 	private DetailInfoHolder detailInfoHolder;
 	private DetailScreenHolder detailScreenHolder;
 	private DetailSafeHolder safeHolder;
+	private DetailDesHolder desHolder;
 
 	protected View createSuccessView() {
 		View view = UiUtils.inflate(R.layout.activity_detail);
@@ -88,6 +90,12 @@ public class DetailActivity extends BaseActivity {
 		detailScreenHolder = new DetailScreenHolder();
 		detailScreenHolder.setData(data);
 		detail_screen.addView(detailScreenHolder.getContentView());
+
+		//应用简介描述holder
+		detail_des = (FrameLayout) view.findViewById(R.id.detail_des);
+		desHolder = new DetailDesHolder();
+		desHolder.setData(data);
+		detail_des.addView(desHolder.getContentView());
 
 		return view;
 	}

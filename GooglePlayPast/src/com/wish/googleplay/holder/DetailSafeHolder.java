@@ -4,7 +4,10 @@ import java.util.List;
 
 import android.graphics.Color;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -12,6 +15,10 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.Animator.AnimatorListener;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
 import com.wish.googleplay.R;
 import com.wish.googleplay.domain.AppInfo;
 import com.wish.googleplay.http.HttpHelper;
@@ -57,6 +64,12 @@ public class DetailSafeHolder extends BaseHolder<AppInfo> implements
 		des_layout[2] = (LinearLayout) view.findViewById(R.id.des_layout_3);
 		des_layout[3] = (LinearLayout) view.findViewById(R.id.des_layout_4);
 
+		// 让初始化状态安全标记界面为隐藏
+		LayoutParams layoutParams = safe_content.getLayoutParams();
+		layoutParams.height = 0;
+		safe_content.setLayoutParams(layoutParams);
+
+		safe_arrow.setImageResource(R.drawable.arrow_down);
 		return view;
 
 	}
@@ -104,18 +117,81 @@ public class DetailSafeHolder extends BaseHolder<AppInfo> implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.safe_layout:
-			if (!flag) {
+			int startHeight,
+			targetHeight;// 值动画要用到的两个起始位置
+			if (!flag) { // 隐藏状态，需要做展开的动画，值从0变化到目标高度
+				startHeight = 0;
+				targetHeight = getMeasureHeight();
 				flag = true;
-				safe_content.setVisibility(View.VISIBLE);
+				// safe_content.setVisibility(View.VISIBLE);
 			} else {
+				startHeight = getMeasureHeight();
+				targetHeight = 0;
 				flag = false;
-				safe_content.setVisibility(View.GONE);
+				// safe_content.setVisibility(View.GONE);
 			}
+
+			ValueAnimator animator = ValueAnimator.ofInt(startHeight,
+					targetHeight);
+			final LayoutParams layoutParams = safe_content.getLayoutParams();
+			// 监听值的变化
+			animator.addUpdateListener(new AnimatorUpdateListener() {
+
+				@Override
+				public void onAnimationUpdate(ValueAnimator animator) {
+					int value = (Integer) animator.getAnimatedValue();// 运行当前时间点的一个值
+					layoutParams.height = value;
+					safe_content.setLayoutParams(layoutParams);// 刷新界面
+				}
+			});
+
+			animator.addListener(new AnimatorListener() {
+
+				@Override
+				public void onAnimationStart(Animator arg0) {
+
+				}
+
+				@Override
+				public void onAnimationRepeat(Animator arg0) {
+
+				}
+
+				@Override
+				public void onAnimationEnd(Animator arg0) {
+					// 动画运行结束判断布局是显示或隐藏，从而进行相应操作
+					if (flag) {
+						safe_arrow.setImageResource(R.drawable.arrow_up);
+					} else {
+						safe_arrow.setImageResource(R.drawable.arrow_down);
+					}
+				}
+
+				@Override
+				public void onAnimationCancel(Animator arg0) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+			animator.setDuration(500);
+			animator.start();
 			break;
 
-		default:
-			break;
 		}
 	}
 
+	private int getMeasureHeight() {
+		int width = safe_content.getMeasuredWidth();// 由于宽度是固定不变的，我们可以直接取出来
+		safe_content.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;// 高度是不确定的，我们让它包裹内容
+
+		// 参数1：尺寸。
+		// 参数2：测量控件的模式（EXACTLY--精确测量，也就是传入的值就是实际值。AT_MOST--最大值，传入的值为可以变化的最大值，但是以实际值为准，比如我们上面定义了高度为包裹内容）
+		int widthMeasureSpec = MeasureSpec.makeMeasureSpec(width,
+				MeasureSpec.EXACTLY);
+		int heightMeasureSpec = MeasureSpec.makeMeasureSpec(1000,
+				MeasureSpec.AT_MOST);
+
+		safe_content.measure(widthMeasureSpec, heightMeasureSpec);// 通过该方法重新测量控件
+		return safe_content.getMeasuredHeight();
+	}
 }
