@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 
 import com.wish.googleplay.domain.AppInfo;
+import com.wish.googleplay.holder.DetailBottomHolder;
 import com.wish.googleplay.holder.DetailDesHolder;
 import com.wish.googleplay.holder.DetailInfoHolder;
 import com.wish.googleplay.holder.DetailSafeHolder;
@@ -65,13 +66,17 @@ public class DetailActivity extends BaseActivity {
 	private DetailScreenHolder detailScreenHolder;
 	private DetailSafeHolder safeHolder;
 	private DetailDesHolder desHolder;
+	private DetailBottomHolder bottomHolder;
 
 	protected View createSuccessView() {
 		View view = UiUtils.inflate(R.layout.activity_detail);
 
 		// 添加信息区域
 		bottom_layout = (FrameLayout) view.findViewById(R.id.bottom_layout);
-
+		bottomHolder= new DetailBottomHolder();
+		bottomHolder.setData(data);
+		bottom_layout.addView(bottomHolder.getContentView());
+		
 		// 操作 应用程序信息
 		detail_info = (FrameLayout) view.findViewById(R.id.detail_info);
 		detailInfoHolder = new DetailInfoHolder();

@@ -12,6 +12,7 @@ import com.wish.googleplay.http.HttpHelper;
 import com.wish.googleplay.protocol.SubjectProtocol;
 import com.wish.googleplay.tools.BitmapHelper;
 import com.wish.googleplay.tools.UiUtils;
+import com.wish.googleplay.view.BaseListView;
 import com.wish.googleplay.view.LoadingPage.LoadResult;
 
 import android.os.Bundle;
@@ -30,7 +31,7 @@ public class SubjectFragment extends BaseFragment {
 
 	@Override
 	public View createSuccessView() {
-		ListView listView = new ListView(UiUtils.getContext());
+		BaseListView listView = new BaseListView(UiUtils.getContext());
 		listView.setAdapter(new SubjectAdapter(datas, listView));
 		return listView;
 	}
@@ -49,7 +50,7 @@ public class SubjectFragment extends BaseFragment {
 		@Override
 		protected List<SubjectInfo> onload() {
 			SubjectProtocol protocol = new SubjectProtocol();
-			List<SubjectInfo> load = protocol.load(0);
+			List<SubjectInfo> load = protocol.load(datas.size());
 			datas.addAll(load);
 			return load;
 		}

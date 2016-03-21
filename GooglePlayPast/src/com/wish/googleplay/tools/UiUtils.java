@@ -1,19 +1,15 @@
 package com.wish.googleplay.tools;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import com.wish.googleplay.BaseActivity;
 import com.wish.googleplay.BaseApplication;
 
 public class UiUtils {
-	/**
-	 * ��ȡ���ַ�����
-	 * 
-	 * @param tabNames
-	 *            �ַ������id
-	 */
 	public static String[] getStringArray(int tabNames) {
 		return getResource().getStringArray(tabNames);
 	}
@@ -26,30 +22,20 @@ public class UiUtils {
 		return BaseApplication.getApplication();
 	}
 
-	/** dipת��px */
 	public static int dip2px(int dip) {
 		final float scale = getResource().getDisplayMetrics().density;
 		return (int) (dip * scale + 0.5f);
 	}
-
-	/** pxzת��dip */
 
 	public static int px2dip(int px) {
 		final float scale = getResource().getDisplayMetrics().density;
 		return (int) (px / scale + 0.5f);
 	}
 
-	/**
-	 * ��Runnable �����ύ�����߳�����
-	 * 
-	 * @param runnable
-	 */
 	public static void runOnUiThread(Runnable runnable) {
-		// �����߳�����
 		if (android.os.Process.myTid() == BaseApplication.getMainTid()) {
 			runnable.run();
 		} else {
-			// ��ȡhandler
 			BaseApplication.getHandler().post(runnable);
 		}
 	}
@@ -85,5 +71,16 @@ public class UiUtils {
 	 */
 	public static void cancel(Runnable auToRunTask) {
 		BaseApplication.getHandler().removeCallbacks(auToRunTask);
+	}
+
+	public static void startActivity(Intent intent) {
+		// 如果不在activity里去打开activity 需要指定任务栈 需要设置标签
+		if (BaseActivity.activity == null) {
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			getContext().startActivity(intent);
+		} else {
+			// 注意这里不能拿getContext去调用startActivity方法，因为getContext里默认也是没activity任务栈的
+			BaseActivity.activity.startActivity(intent);
+		}
 	}
 }

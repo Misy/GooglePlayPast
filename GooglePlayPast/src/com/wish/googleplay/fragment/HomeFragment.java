@@ -45,17 +45,7 @@ public class HomeFragment extends BaseFragment {
 				return load;
 			}
 
-			@Override
-			public void onInnerItemClick(int position) {
-				super.onInnerItemClick(position);
-				Toast.makeText(getActivity(), "position:" + position, 0).show();
-				// 跳转到DetailActivity
-				Intent intent = new Intent(UiUtils.getContext(),
-						DetailActivity.class);
-				AppInfo appInfo = datas.get(position);
-				intent.putExtra("packageName", appInfo.getPackageName());
-				startActivity(intent);
-			}
+		
 
 		});
 		listView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
