@@ -83,9 +83,13 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 		if (holder != null) {
 			return holder;
 		} else {
-			holder = new MoreHolder(this);
+			holder = new MoreHolder(this,hasMore());
 			return holder;
 		}
+	}
+
+	protected boolean hasMore() {
+		return true;
 	}
 
 	@Override
@@ -108,7 +112,6 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 	protected abstract BaseHolder<Data> getHolder();
 
 	public void loadMore() {
-		// 璇锋眰缃戠粶瑕佹斁鍒板瓙绾跨▼涓墽琛岋紝璋冪敤鎴戜滑涔嬪墠鍒涘缓鐨勭嚎绋嬫睜绫绘潵绠＄悊
 		ThreadManager.getInstance().createLongPool().execute(new Runnable() {
 
 			@Override

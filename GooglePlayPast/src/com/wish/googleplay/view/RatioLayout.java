@@ -8,17 +8,25 @@ public class RatioLayout extends FrameLayout {
 	// 按照宽高比例去显示
 	private float ratio = 2.43f; // 比例值
 
+	public void setRatio(float ratio) {
+		this.ratio = ratio;
+	}
+
 	public RatioLayout(Context context) {
 		super(context);
 	}
 
 	public RatioLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		// 参数1 命名空间 参数2 属性的名字 参数3 默认的值
+		float ratio = attrs.getAttributeFloatValue(
+				"http://schemas.android.com/apk/res/com.wish.googleplay",
+				"ratio", 2.43f);
+		setRatio(ratio);
 	}
 
 	public RatioLayout(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		// TODO Auto-generated constructor stub
+		this(context, attrs, 0);
 	}
 
 	@Override

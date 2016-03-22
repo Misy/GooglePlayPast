@@ -16,14 +16,21 @@ public class MoreHolder extends BaseHolder<Integer> {
 	// 加载更多中布局，加载更多失败布局
 	private RelativeLayout rl_more_loading, rl_more_error;
 
-	public MoreHolder(DefaultAdapter adapter) {
+	private boolean hasMore;
+	public MoreHolder(DefaultAdapter adapter, boolean hasMore) {
 		super();
 		this.adapter = adapter;
+		this.hasMore=hasMore;
+		if(!hasMore){
+			setData(0);
+		}
 	}
 
 	@Override
 	public View getContentView() {
-		loadMore();
+		if(hasMore){
+			loadMore();
+		}
 		return super.getContentView();
 	}
 
