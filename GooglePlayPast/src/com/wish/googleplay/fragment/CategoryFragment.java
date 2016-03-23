@@ -6,6 +6,7 @@ import com.wish.googleplay.adapter.DefaultAdapter;
 import com.wish.googleplay.domain.CategoryInfo;
 import com.wish.googleplay.holder.BaseHolder;
 import com.wish.googleplay.holder.CategoryContentHolder;
+import com.wish.googleplay.holder.CategoryTitleHolder;
 import com.wish.googleplay.protocol.CategoryProtocol;
 import com.wish.googleplay.tools.UiUtils;
 import com.wish.googleplay.view.BaseListView;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 public class CategoryFragment extends BaseFragment {
 
+	public static final int ITEM_TITLE = 2;
 	private List<CategoryInfo> datas;
 
 	@Override
@@ -31,6 +33,7 @@ public class CategoryFragment extends BaseFragment {
 	}
 
 	class CategoryAdapter extends DefaultAdapter<CategoryInfo> {
+		private int position;
 
 		public CategoryAdapter(List<CategoryInfo> datas, ListView listView) {
 			super(datas, listView);
@@ -38,7 +41,17 @@ public class CategoryFragment extends BaseFragment {
 
 		@Override
 		protected BaseHolder<CategoryInfo> getHolder() {
-			return new CategoryContentHolder();
+			if(!datas.get(position).isTitle()){
+				return new CategoryContentHolder();
+			}else{
+				return new CategoryTitleHolder();
+			}
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			this.position = position;
+			return super.getView(position, convertView, parent);
 		}
 
 		@Override
@@ -51,6 +64,20 @@ public class CategoryFragment extends BaseFragment {
 			return null;
 		}
 
+		@Override
+		public int getViewTypeCount() {
+			// 又额外多了一种条目类型 现在又三种 1 标题 2 内容 3 加载更多(没有显示)
+			return super.getViewTypeCount() + 1;
+		}
+
+		@Override
+		protected int getInnerItemViewType(int position) {
+			if (datas.get(position).isTitle()) {
+				return ITEM_TITLE;
+			} else {
+				return super.getInnerItemViewType(position);
+			}
+		}
 	}
 
 	@Override
@@ -59,4 +86,5 @@ public class CategoryFragment extends BaseFragment {
 		datas = protocol.load(0);
 		return checkData(datas);
 	}
+
 }

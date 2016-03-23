@@ -63,7 +63,7 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 				holder = (BaseHolder) convertView.getTag();
 			}
 			break;
-		case DEFAULT_ITEM:
+		default:
 			if (convertView == null) {
 				holder = getHolder();
 			} else {
@@ -83,7 +83,7 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 		if (holder != null) {
 			return holder;
 		} else {
-			holder = new MoreHolder(this,hasMore());
+			holder = new MoreHolder(this, hasMore());
 			return holder;
 		}
 	}
@@ -105,7 +105,7 @@ public abstract class DefaultAdapter<Data> extends BaseAdapter implements
 		return getInnerItemViewType(position);
 	}
 
-	private int getInnerItemViewType(int position) {
+	protected int getInnerItemViewType(int position) {
 		return DEFAULT_ITEM;
 	}
 
